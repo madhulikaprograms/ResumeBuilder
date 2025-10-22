@@ -2,13 +2,11 @@ package com.sefaunal.resumebuilder.Service;
 
 import com.sefaunal.resumebuilder.Exception.PasswordException;
 import com.sefaunal.resumebuilder.Model.Skill;
-import com.sefaunal.resumebuilder.Model.User;
 import com.sefaunal.resumebuilder.Repository.SkillRepository;
 import com.sefaunal.resumebuilder.Request.SkillRequest;
 import com.sefaunal.resumebuilder.Utils.CommonUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -21,49 +19,53 @@ import java.util.Collection;
 @Service
 @RequiredArgsConstructor
 public class SkillService {
-    private final SkillRepository skillRepository;
 
-    public void addSkill(String skillName, String skillType, String userID) {
+    private final SkillRepository skillRepository;
+    public SkillService(SkillRepository skillRepository) {
+        this.skillRepository = skillRepository;
+    }
+
+    public void addSkill(String skillName, String skillType, String userId) {
         Skill skill = new Skill();
         skill.setSkillName(skillName);
         skill.setSkillType(skillType);
         skill.setAdditionDate(Instant.now());
-        skill.setUserID(userID);
+        skill.setUserId(userId);
 
         skillRepository.save(skill);
     }
 
-    public Skill findRecordByID(String ID) {
-        return skillRepository.findByID(ID).orElseThrow();
+    public Skill findRecordByID(String id) {
+        return skillRepository.findByID(id).orElseThrow();
     }
 
-    public Collection<Skill> findAllCoreSkillsByUserID(String userID) {
-        return skillRepository.findAllByUserIDAndSkillType(userID, "CORE");
+    public Collection<Skill> findAllCoreSkillsByUserID(String userId) {
+        return skillRepository.findAllByUserIDAndSkillType(userId, "CORE");
     }
 
-    public Collection<Skill> findAllOtherSkillsByUserID(String userID) {
-        return skillRepository.findAllByUserIDAndSkillType(userID, "OTHER");
+    public Collection<Skill> findAllOtherSkillsByUserID(String userId) {
+        return skillRepository.findAllByUserIDAndSkillType(userId, "OTHER");
     }
 
-    public void deleteRecordByID(String skillID, String userID) {
-        Skill skill = skillRepository.findByID(skillID).orElseThrow();
+    public void deleteRecordByID(String skillId, String userId) {
+        Skill skill = skillRepository.findByID(skillId).orElseThrow();
 
-        if (!skill.getUserID().equals(userID)) {
+        if (!skill.getUserId().equals(userId)) {
             throw new AccessDeniedException("IDs Don't Match. You Are Not Authorized!");
         }
 
-        skillRepository.deleteById(skillID);
+        skillRepository.deleteById(skillId);
     }
 
-    public void updateRecordByID(SkillRequest skillRequest, String userPassword, String userID) {
-        Skill skill = skillRepository.findByID(skillRequest.getID()).orElseThrow();
+    public void updateRecordByID(SkillRequest skillRequest, String userPassword, String userId) {
+        Skill skill = skillRepository.findByID(skillRequest.getId()).orElseThrow();
 
-        if (!skill.getUserID().equals(userID)) {
+        if (!skill.getUserId().equals(userId)) {
             throw new AccessDeniedException("IDs Don't Match. You Are Not Authorized!");
         }
 
         if (!CommonUtils.checkPasswordsMatch(skillRequest.getPassword(), userPassword)) {
-            throw new PasswordException("Passwords Does Not Match");
+            throw new PasswordException("Passwords Do Not Match");
         }
 
         skill.setSkillName(skillRequest.getSkillName());

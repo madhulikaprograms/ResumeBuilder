@@ -18,7 +18,7 @@ import org.springframework.security.web.SecurityFilterChain;
 @RequiredArgsConstructor
 public class SecurityConfig {
     private final AuthenticationProvider authenticationProvider;
-
+     
     @Value("${remember.secret-key}")
     private String REMEMBER_ME_SECRET_KEY;
 

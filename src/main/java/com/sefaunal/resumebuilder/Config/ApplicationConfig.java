@@ -21,6 +21,9 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @RequiredArgsConstructor
 public class ApplicationConfig implements WebMvcConfigurer {
     private final UserService userService;
+     public ApplicationConfig(UserService userService) {
+        this.userService = userService;
+    }
 
     @Bean
     UserDetailsService userDetailsService() {

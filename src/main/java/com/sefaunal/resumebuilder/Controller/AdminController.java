@@ -42,6 +42,7 @@ public class AdminController {
     private final ProjectService projectService;
 
     private static final Integer REQUEST_SIZE = 50;
+    
 
     @GetMapping("/panel")
     public ModelAndView adminListPanel(@RequestParam(defaultValue = "1") int page,
@@ -100,10 +101,10 @@ public class AdminController {
         User user = userService.findUserByUsername(principal.getName());
         User userData = userService.findUserByID(ID);
 
-        Collection<Skill> coreSkills = skillService.findAllCoreSkillsByUserID(userData.getID());
-        Collection<Project> projects = projectService.findAllProjectsByUserID(userData.getID());
-        Collection<Skill> otherSkills = skillService.findAllOtherSkillsByUserID(userData.getID());
-        Collection<Experience> experiences = experienceService.findAllExperiencesByUserID(userData.getID());
+        Collection<Skill> coreSkills = skillService.findAllCoreSkillsByUserID(userData.getId());
+        Collection<Project> projects = projectService.findAllProjectsByUserID(userData.getId());
+        Collection<Skill> otherSkills = skillService.findAllOtherSkillsByUserID(userData.getId());
+        Collection<Experience> experiences = experienceService.findAllExperiencesByUserID(userData.getId());
 
         model.addAttribute("coreSkills", coreSkills);
         model.addAttribute("otherSkills", otherSkills);

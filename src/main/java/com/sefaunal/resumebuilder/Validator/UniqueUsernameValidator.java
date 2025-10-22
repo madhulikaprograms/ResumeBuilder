@@ -4,21 +4,21 @@ import com.sefaunal.resumebuilder.Annotation.UniqueUsername;
 import com.sefaunal.resumebuilder.Service.UserService;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-/**
- * @author github.com/sefaunal
- * @since 2024-01-14
- */
-@RequiredArgsConstructor
+@Component
 public class UniqueUsernameValidator implements ConstraintValidator<UniqueUsername, String> {
+
     private final UserService userService;
 
-    @Override
-    public void initialize(UniqueUsername constraintAnnotation) {}
+    @Autowired
+    public UniqueUsernameValidator(UserService userService) {
+        this.userService = userService;
+    }
 
     @Override
-    public boolean isValid(String username, ConstraintValidatorContext constraintValidatorContext) {
-        return userService.isUsernameFree(username);
+    public boolean isValid(String username, ConstraintValidatorContext context) {
+        return username != null && !userService.usernameExists(username);
     }
 }

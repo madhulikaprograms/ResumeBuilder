@@ -2,17 +2,28 @@ package com.sefaunal.resumebuilder.Request;
 
 import lombok.Data;
 
-/**
- * @author github.com/sefaunal
- * @since 2024-01-25
- */
 @Data
 public class ProjectRequest {
-    private String ID;
 
+    private String id;
     private String title;
-
     private String description;
-
     private String password;
+
+    // ✅ Explicit getters
+    public String getId() {
+        return id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public String getPassword() {
+        return password;
+    }
 }

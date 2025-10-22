@@ -54,6 +54,19 @@ public class UserController {
 
     private final TemplateEngine templateEngine;
 
+     public UserController(
+            UserService userService,
+            SkillService skillService,
+            ExperienceService experienceService,
+            ProjectService projectService,
+            TemplateEngine templateEngine
+    ) {
+        this.userService = userService;
+        this.skillService = skillService;
+        this.experienceService = experienceService;
+        this.projectService = projectService;
+        this.templateEngine = templateEngine;
+    }
     @GetMapping("/resume")
     public ModelAndView resumePage(Principal principal, Model model) {
         setUserRelatedInfoToModel(principal, model);
@@ -185,10 +198,10 @@ public class UserController {
     private void setUserRelatedInfoToModel(Principal principal, Model model) {
         User user = userService.findUserByUsername(principal.getName());
 
-        Collection<Skill> coreSkills = skillService.findAllCoreSkillsByUserID(user.getID());
-        Collection<Skill> otherSkills = skillService.findAllOtherSkillsByUserID(user.getID());
-        Collection<Experience> experiences = experienceService.findAllExperiencesByUserID(user.getID());
-        Collection<Project> projects = projectService.findAllProjectsByUserID(user.getID());
+        Collection<Skill> coreSkills = skillService.findAllCoreSkillsByUserID(user.getId());
+        Collection<Skill> otherSkills = skillService.findAllOtherSkillsByUserID(user.getId());
+        Collection<Experience> experiences = experienceService.findAllExperiencesByUserID(user.getId());
+        Collection<Project> projects = projectService.findAllProjectsByUserID(user.getId());
 
         model.addAttribute("user", user);
         model.addAttribute("coreSkills", coreSkills);
@@ -201,10 +214,10 @@ public class UserController {
     public void downloadResume(Principal principal, HttpServletResponse response) throws Exception {
         User userData = userService.findUserByUsername(principal.getName());
 
-        Collection<Project> projects = projectService.findAllProjectsByUserID(userData.getID());
-        Collection<Skill> coreSkills = skillService.findAllCoreSkillsByUserID(userData.getID());
-        Collection<Skill> otherSkills = skillService.findAllOtherSkillsByUserID(userData.getID());
-        Collection<Experience> experiences = experienceService.findAllExperiencesByUserID(userData.getID());
+        Collection<Project> projects = projectService.findAllProjectsByUserID(userData.getId());
+        Collection<Skill> coreSkills = skillService.findAllCoreSkillsByUserID(userData.getId());
+        Collection<Skill> otherSkills = skillService.findAllOtherSkillsByUserID(userData.getId());
+        Collection<Experience> experiences = experienceService.findAllExperiencesByUserID(userData.getId());
 
         // Create a Thymeleaf context
         Context context = new Context();

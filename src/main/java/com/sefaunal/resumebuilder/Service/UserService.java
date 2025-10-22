@@ -24,23 +24,22 @@ import org.springframework.web.multipart.MultipartFile;
 import java.time.Instant;
 import java.util.Objects;
 
-/**
- * @author github.com/sefaunal
- * @since 2024-01-14
- */
 @Service
 @RequiredArgsConstructor
 public class UserService {
-    private final UserRepository userRepository;
 
+    private final UserRepository userRepository;
+     public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
     public User findUserByUsername(String username) {
         return userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("No user found with " + username));
     }
 
-    public User findUserByID(String ID) {
-        return userRepository.findById(ID)
-                .orElseThrow(() -> new UsernameNotFoundException("No user found with " + ID));
+    public User findUserByID(String id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new UsernameNotFoundException("No user found with " + id));
     }
 
     public boolean isEmailFree(String email) {
@@ -49,6 +48,11 @@ public class UserService {
 
     public boolean isUsernameFree(String username) {
         return userRepository.findByUsername(username).isEmpty();
+    }
+
+    // ✅ Added to support UniqueUsernameValidator
+    public boolean usernameExists(String username) {
+        return userRepository.findByUsername(username).isPresent();
     }
 
     public void createUser(User user) {
@@ -68,7 +72,10 @@ public class UserService {
     }
 
     public User updateUserProfileImage(MultipartFile profileImage) {
-        String uniqueFilename = ImageUtils.generateUniqueFilename(CommonUtils.getUserInfo(), Objects.requireNonNull(profileImage.getContentType()));
+        String uniqueFilename = ImageUtils.generateUniqueFilename(
+                CommonUtils.getUserInfo(),
+                Objects.requireNonNull(profileImage.getContentType())
+        );
 
         String imageURI = ImageUtils.firebaseUploadImage(profileImage, uniqueFilename);
 
@@ -76,7 +83,6 @@ public class UserService {
         user.setProfileImageURI(imageURI);
 
         userRepository.save(user);
-
         return user;
     }
 
@@ -132,7 +138,7 @@ public class UserService {
         User user = findUserByUsername(CommonUtils.getUserInfo());
 
         if (!CommonUtils.checkPasswordsMatch(confirmationPassword, user.getPassword())) {
-            throw new PasswordException("Passwords Does Not Match");
+            throw new PasswordException("Passwords Do Not Match");
         }
 
         user.setAboutMe(userAboutMe);
@@ -150,15 +156,16 @@ public class UserService {
         if (CommonUtils.checkPasswordsMatch(confirmPassword, user.getPassword())) {
             userRepository.deleteByUsername(CommonUtils.getUserInfo());
 
-            // Clear SecurityContext
             SecurityContextHolder.clearContext();
 
-            // Invalidate Session
             HttpSession session = httpServletRequest.getSession(false);
             if (session != null) {
                 session.invalidate();
             }
+
+            return true;
         }
+
         return false;
     }
 

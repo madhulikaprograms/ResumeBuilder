@@ -11,6 +11,7 @@ import lombok.Data;
  */
 @Data
 public class UserRequest {
+
     @NotNull
     @Size(min = 1, max = 75)
     private String firstName;
@@ -27,4 +28,21 @@ public class UserRequest {
     @NotNull
     @Size(min = 8, max = 75)
     private String password;
+
+    // ✅ Explicit getters to avoid "cannot find symbol" errors
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
 }

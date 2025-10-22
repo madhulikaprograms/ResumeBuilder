@@ -28,14 +28,16 @@ import java.security.Principal;
 @RequiredArgsConstructor
 public class ExperienceController {
     private final UserService userService;
-
     private final ExperienceService experienceService;
-
+     public ExperienceController(UserService userService, ExperienceService experienceService) {
+        this.userService = userService;
+        this.experienceService = experienceService;
+    }
     @PostMapping("/add")
     public RedirectView addExperience(@ModelAttribute Experience experience, Principal principal) {
         User user = userService.findUserByUsername(principal.getName());
 
-        experienceService.addExperience(experience, user.getID());
+        experienceService.addExperience(experience, user.getId());
 
         return new RedirectView("/user/resume/details");
     }
@@ -44,7 +46,7 @@ public class ExperienceController {
     public RedirectView deleteExperienceByID(@RequestParam String ID, Principal principal) {
         User user = userService.findUserByUsername(principal.getName());
 
-        experienceService.deleteRecordByID(ID, user.getID());
+        experienceService.deleteRecordByID(ID, user.getId());
 
         return new RedirectView("/user/resume/details");
     }
@@ -65,7 +67,7 @@ public class ExperienceController {
     public RedirectView updateExperienceRecord(@ModelAttribute ExperienceRequest experienceRequest, Principal principal) {
         User user = userService.findUserByUsername(principal.getName());
 
-        experienceService.updateRecordByID(experienceRequest, user.getPassword(), user.getID());
+        experienceService.updateRecordByID(experienceRequest, user.getPassword(), user.getId());
 
         return new RedirectView("/user/resume/details");
     }

@@ -2,7 +2,7 @@ package com.sefaunal.resumebuilder.Controller;
 
 import com.sefaunal.resumebuilder.Model.User;
 import com.sefaunal.resumebuilder.Service.UserService;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,9 +16,15 @@ import java.security.Principal;
  * @since 2024-01-14
  */
 @Controller
-@RequiredArgsConstructor
 public class HomeController {
+
     private final UserService userService;
+
+    // ✅ Manual constructor injection
+    @Autowired
+    public HomeController(UserService userService) {
+        this.userService = userService;
+    }
 
     @GetMapping("/")
     public RedirectView redirectToHome() {
@@ -33,6 +39,6 @@ public class HomeController {
             User user = userService.findUserByUsername(principal.getName());
             model.addAttribute("user", user);
         }
-        return new ModelAndView("Home");
+        return new ModelAndView("HomePage");
     }
 }

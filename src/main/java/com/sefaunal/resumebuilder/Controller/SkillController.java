@@ -27,14 +27,17 @@ import java.security.Principal;
 @RequiredArgsConstructor
 public class SkillController {
     private final UserService userService;
-
     private final SkillService skillService;
+     public SkillController(UserService userService, SkillService skillService) {
+        this.userService = userService;
+        this.skillService = skillService;
+    }
 
     @PostMapping("/core/add")
     public RedirectView addCoreSkill(@RequestParam String skillName, Principal principal) {
         User user = userService.findUserByUsername(principal.getName());
 
-        skillService.addSkill(skillName, "CORE", user.getID());
+        skillService.addSkill(skillName, "CORE", user.getId());
 
         return new RedirectView("/user/resume/details");
     }
@@ -43,7 +46,7 @@ public class SkillController {
     public RedirectView addOtherSkill(@RequestParam String skillName, Principal principal) {
         User user = userService.findUserByUsername(principal.getName());
 
-        skillService.addSkill(skillName, "OTHER", user.getID());
+        skillService.addSkill(skillName, "OTHER", user.getId());
 
         return new RedirectView("/user/resume/details");
     }
@@ -52,7 +55,7 @@ public class SkillController {
     public RedirectView deleteSkillByID(@RequestParam String ID, Principal principal) {
         User user = userService.findUserByUsername(principal.getName());
 
-        skillService.deleteRecordByID(ID, user.getID());
+        skillService.deleteRecordByID(ID, user.getId());
 
         return new RedirectView("/user/resume/details");
     }
@@ -73,7 +76,7 @@ public class SkillController {
     public RedirectView updateSkillRecord(@ModelAttribute SkillRequest skillRequest, Principal principal) {
         User user = userService.findUserByUsername(principal.getName());
 
-        skillService.updateRecordByID(skillRequest, user.getPassword(), user.getID());
+        skillService.updateRecordByID(skillRequest, user.getPassword(), user.getId());
 
         return new RedirectView("/user/resume/details");
     }

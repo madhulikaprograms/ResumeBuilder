@@ -22,49 +22,53 @@ import java.util.Objects;
 @Service
 @RequiredArgsConstructor
 public class ProjectService {
-    private final ProjectRepository projectRepository;
 
-    public void addProject(Project project, MultipartFile projectImage, String userID) {
+    private final ProjectRepository projectRepository;
+     public ProjectService(ProjectRepository projectRepository) {
+        this.projectRepository = projectRepository;
+    }
+
+    public void addProject(Project project, MultipartFile projectImage, String userId) {
         String uniqueFilename = ImageUtils.generateUniqueFilename(
                 CommonUtils.getUserInfo(),
                 Objects.requireNonNull(projectImage.getContentType())
         );
         String imageURI = ImageUtils.firebaseUploadImage(projectImage, uniqueFilename);
 
-        project.setUserID(userID);
+        project.setUserId(userId);
         project.setImageURI(imageURI);
         project.setAdditionDate(Instant.now());
 
         projectRepository.save(project);
     }
 
-    public Project findRecordByID(String ID) {
-        return projectRepository.findByID(ID).orElseThrow();
+    public Project findRecordByID(String id) {
+        return projectRepository.findByID(id).orElseThrow();
     }
 
-    public Collection<Project> findAllProjectsByUserID(String userID) {
-        return projectRepository.findAllByUserID(userID);
+    public Collection<Project> findAllProjectsByUserID(String userId) {
+        return projectRepository.findAllByUserID(userId);
     }
 
-    public void deleteRecordByID(String projectID, String userID) {
-        Project project = projectRepository.findByID(projectID).orElseThrow();
+    public void deleteRecordByID(String projectId, String userId) {
+        Project project = projectRepository.findByID(projectId).orElseThrow();
 
-        if (!project.getUserID().equals(userID)) {
+        if (!project.getUserId().equals(userId)) {
             throw new AccessDeniedException("IDs Don't Match. You Are Not Authorized!");
         }
 
-        projectRepository.deleteById(projectID);
+        projectRepository.deleteById(projectId);
     }
 
-    public void updateRecordByID(ProjectRequest projectRequest, MultipartFile projectImage, String userPassword, String userID) {
-        Project project = projectRepository.findByID(projectRequest.getID()).orElseThrow();
+    public void updateRecordByID(ProjectRequest projectRequest, MultipartFile projectImage, String userPassword, String userId) {
+        Project project = projectRepository.findByID(projectRequest.getId()).orElseThrow();
 
-        if (!project.getUserID().equals(userID)) {
+        if (!project.getUserId().equals(userId)) {
             throw new AccessDeniedException("IDs Don't Match. You Are Not Authorized!");
         }
 
         if (!CommonUtils.checkPasswordsMatch(projectRequest.getPassword(), userPassword)) {
-            throw new PasswordException("Passwords Does Not Match");
+            throw new PasswordException("Passwords Do Not Match");
         }
 
         if (!projectImage.isEmpty()) {
@@ -74,12 +78,11 @@ public class ProjectService {
             );
 
             String imageURI = ImageUtils.firebaseUploadImage(projectImage, uniqueFilename);
-
             project.setImageURI(imageURI);
         }
 
         project.setTitle(projectRequest.getTitle());
-        project.setDescription(projectRequest.getTitle());
+        project.setDescription(projectRequest.getDescription());
 
         projectRepository.save(project);
     }

@@ -20,10 +20,13 @@ import java.util.Collection;
 @RequiredArgsConstructor
 public class ExperienceService {
     private final ExperienceRepository experienceRepository;
+     public ExperienceService(ExperienceRepository experienceRepository) {
+        this.experienceRepository = experienceRepository;
+    }
 
     public void addExperience(Experience experience, String userID) {
         experience.setAdditionDate(Instant.now());
-        experience.setUserID(userID);
+        experience.setUserId(userID);
         experience.formatStartDate(experience.getStartDate());
 
         if (experience.getEndDate() != null) {
@@ -44,7 +47,7 @@ public class ExperienceService {
     public void deleteRecordByID(String experienceID, String userID) {
         Experience experience = experienceRepository.findByID(experienceID).orElseThrow();
 
-        if (!experience.getUserID().equals(userID)) {
+        if (!experience.getUserId().equals(userID)) {
             throw new AccessDeniedException("IDs Don't Match. You Are Not Authorized!");
         }
 
@@ -52,9 +55,9 @@ public class ExperienceService {
     }
 
     public void updateRecordByID(ExperienceRequest experienceRequest, String userPassword, String userID) {
-        Experience experience = experienceRepository.findByID(experienceRequest.getID()).orElseThrow();
+        Experience experience = experienceRepository.findByID(experienceRequest.getId()).orElseThrow();
 
-        if (!experience.getUserID().equals(userID)) {
+        if (!experience.getUserId().equals(userID)) {
             throw new AccessDeniedException("IDs Don't Match. You Are Not Authorized!");
         }
 

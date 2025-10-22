@@ -37,7 +37,7 @@ public class ProjectController {
                                    Principal principal) {
         User user = userService.findUserByUsername(principal.getName());
 
-        projectService.addProject(project, projectImage, user.getID());
+        projectService.addProject(project, projectImage, user.getId());
 
         return new RedirectView("/user/resume/details");
     }
@@ -46,7 +46,7 @@ public class ProjectController {
     public RedirectView deleteProjectByID(@RequestParam String ID, Principal principal) {
         User user = userService.findUserByUsername(principal.getName());
 
-        projectService.deleteRecordByID(ID, user.getID());
+        projectService.deleteRecordByID(ID, user.getId());
 
         return new RedirectView("/user/resume/details");
     }
@@ -69,7 +69,7 @@ public class ProjectController {
                                             Principal principal) {
         User user = userService.findUserByUsername(principal.getName());
 
-        projectService.updateRecordByID(projectRequest, projectImage, user.getPassword(), user.getID());
+        projectService.updateRecordByID(projectRequest, projectImage, user.getPassword(), user.getId());
 
         return new RedirectView("/user/resume/details");
     }
