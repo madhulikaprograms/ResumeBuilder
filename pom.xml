@@ -9,17 +9,17 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>3.2.2</version>
-        <relativePath/> <!-- lookup parent from repository -->
+        <relativePath/>
     </parent>
 
     <groupId>com.sefaunal</groupId>
     <artifactId>resumebuilder</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>Resume Builder</name>
-   <description>Resume Builder using Spring Boot, Thymeleaf &amp; MongoDB</description>
+    <description>Resume Builder using Spring Boot, Thymeleaf &amp; MongoDB</description>
 
     <properties>
-        <java.version>24</java.version>
+        <java.version>21</java.version>
     </properties>
 
     <dependencies>
@@ -93,7 +93,7 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.11.0</version>
                 <configuration>
-                    <release>24</release>
+                    <release>21</release>
                 </configuration>
             </plugin>
 
